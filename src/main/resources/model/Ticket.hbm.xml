@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 27-mar-2018 18:42:46 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="model.Ticket" table="ticket" schema="public" optimistic-lock="version">
+        <id name="id" type="int">
+            <column name="id" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="usuario" class="model.Usuario" fetch="select">
+            <column name="usuario" not-null="true" />
+        </many-to-one>
+        <property name="serial" type="string">
+            <column name="serial" length="15" not-null="true" />
+        </property>
+        <property name="fecha" type="date">
+            <column name="fecha" length="13" not-null="true" />
+        </property>
+        <property name="hora" type="time">
+            <column name="hora" length="15" not-null="true" />
+        </property>
+        <property name="ip" type="string">
+            <column name="ip" length="15" not-null="true" />
+        </property>
+        <property name="total" type="big_decimal">
+            <column name="total" precision="10" />
+        </property>
+        <set name="jugadas" table="jugada" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="ticket" not-null="true" />
+            </key>
+            <one-to-many class="model.Jugada" />
+        </set>
+    </class>
+</hibernate-mapping>

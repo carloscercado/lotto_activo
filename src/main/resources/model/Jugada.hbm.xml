@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 27-mar-2018 18:42:46 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="model.Jugada" table="jugada" schema="public" optimistic-lock="version">
+        <id name="id" type="int">
+            <column name="id" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="animal" class="model.Animal" fetch="select">
+            <column name="animal" not-null="true" />
+        </many-to-one>
+        <many-to-one name="sorteo" class="model.Sorteo" fetch="select">
+            <column name="sorteo" not-null="true" />
+        </many-to-one>
+        <many-to-one name="ticket" class="model.Ticket" fetch="select">
+            <column name="ticket" not-null="true" />
+        </many-to-one>
+        <many-to-one name="usuario" class="model.Usuario" fetch="select">
+            <column name="usuario" not-null="true" />
+        </many-to-one>
+        <property name="monto" type="big_decimal">
+            <column name="monto" precision="10" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>
