@@ -1,26 +1,104 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+<?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html">
+        <body>
 
-    <body>
+            <ui:composition template="./../template/menu.xhtml">
 
-        <ui:composition template="./../template/menu.xhtml">
+                <ui:define name="content">
+                    <h:form id="jugada">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <p:selectManyMenu style="width: 100%" scrollHeight="435" value="#{jugadaController.jugadasorteos}" converter="sorteo"
+                                                  var="t">
+                                    <f:selectItems value="#{jugadaController.sorteos}" var="sorteo" itemLabel="#{sorteo.hora}" itemValue="#{sorteo}" />
+                                    <p:column>
+                                        <p:graphicImage name="/images/lotto_activo.png" width="40"/>
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText value="#{t.hora}" />
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText rendered="#{(t.hora.hours le 13) and !(t.hora.hours le 8)}" value="AM" />
+                                        <h:outputText rendered="#{!(t.hora.hours le 0) and (t.hora.hours le 8)}" value="PM" />
+                                    </p:column>
+                                </p:selectManyMenu>
+                            </div>    
+                            <div class="col-md-3">
+                                <p:selectOneListbox style="width: 100%" scrollHeight="400" value="#{jugadaController.animal}"
+                                                    converter="animal" var="t" filter="true" filterMatchMode="contains">
+                                    <f:selectItems value="#{jugadaController.animales}" var="animal" itemLabel="#{animal.numero} - #{animal.nombre}" itemValue="#{animal}" />
+                                    <p:column>
+                                        <p:graphicImage name="/images/#{t.numero}.png" width="45"/>
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText value="#{t.numero} - #{t.nombre}" />
+                                    </p:column>
+                                </p:selectOneListbox>
+                            </div>
 
-            <ui:define name="content">
-                <p:selectOneListbox value="#{jugadaController.animal}" converter="animal" var="t" filter="true" filterMatchMode="contains">
-                    <f:selectItems value="#{jugadaController.animales}" var="animal" itemLabel="#{animal.numero} - #{animal.nombre}" itemValue="#{animal}" />
+                            <div class="col-md-7">
+                                <p:dataTable id="tabla" var="jugada" value="#{jugadaController.jugadas}"
+                                             emptyMessage="Agregue jugadas">
+                                    <f:facet name="header">
+                                        <p:outputPanel>
+                                            <p:inputNumber  placeholder="100,00" value="#{jugadaController.monto}"/>
+                                            <p:commandButton value="Agregar (ENTER)" update="jugada" actionListener="#{jugadaController.add()}"/>
+                                        </p:outputPanel>
+                                    </f:facet>
+                                    <p:column headerText="Animal">
+                                        <p:graphicImage name="/images/#{jugada.animal.numero}.png" width="40"/>
+                                        <h:outputText value="#{jugada.animal.nombre}" />
+                                    </p:column>
 
-                    <p:column>
-                        <h:outputText value="#{t.numero} - #{t.nombre}" />
-                    </p:column>
-                </p:selectOneListbox>
-            </ui:define>
+                                    <p:column headerText="Sorteo" width="20%">
+                                        <h:outputText value="#{jugada.sorteo.hora}" />
+                                        <h:outputText rendered="#{(jugada.sorteo.hora.hours le 13) and !(jugada.sorteo.hora.hours le 8)}" value=" AM" />
+                                        <h:outputText rendered="#{!(jugada.sorteo.hora.hours le 0) and (jugada.sorteo.hora.hours le 8)}" value=" PM" />
+                                    </p:column>
 
-        </ui:composition>
+                                    <p:column headerText="Monto">
+                                        <h:outputLabel  value="#{jugada.monto}">
+                                            <f:convertNumber currencySymbol="Bs " locale="es" minFractionDigits="2" maxFractionDigits="2" type="currency"/>
+                                        </h:outputLabel> 
+                                    </p:column>
+                                    <p:column headerText="Quitar" width="15%">
+                                        <center>
+                                            <p:commandButton icon="fa fa-trash" oncomplete="PF('eliminar').show()" update="@widgetVar(eliminar)" class="btn-danger">
+                                                <f:setPropertyActionListener value="#{jugada}" target="#{jugadaController.jugada}"/>
+                                            </p:commandButton>
+                                        </center>
+                                    </p:column>
 
-    </body>
+                                    <f:facet name="footer">
+                                        Total a pagar
+                                        <h:outputLabel value="#{jugadaController.jugadas.stream().map(x -> x.getMonto()).sum()}">
+                                            <f:convertNumber currencySymbol="Bs " locale="es" minFractionDigits="2" maxFractionDigits="2" type="currency"/>
+                                        </h:outputLabel> 
+                                    </f:facet>
+
+                                </p:dataTable>
+                            </div>
+                        </div>
+                    </h:form>
+
+                    <p:dialog header="¿Estas seguro que desea eliminarlo?" modal="true" maximizable="false" resizable="false"
+                              responsive="true" draggable="false" widgetVar="eliminar">
+                        <h:form>
+                            <center>
+                                <p:commandButton value="SI (ENTER)" actionListener="#{jugadaController.remove()}"/>
+                                <p:commandButton value="NO (ESC)" onclick="PF('eliminar').hide()"/>
+                            </center>
+                        </h:form>
+                    </p:dialog>
+
+                </ui:define>
+
+            </ui:composition>
+
+        </body>
 </html>
