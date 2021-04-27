@@ -13,6 +13,7 @@ jobs:
     demands:
       - agent.name -equals STUDENT_400_02
   steps:
+  - checkout: self
   - task: Maven@3
     inputs:
       mavenPomFile: 'pom.xml'
