@@ -11,7 +11,7 @@ jobs:
   pool:
     name: az400m05l05a-pool
     demands:
-      - agent.name -equals STUDENT_400_02
+      - agent.name -equals MiAgente
   steps:
   - checkout: self
   - task: Maven@3
