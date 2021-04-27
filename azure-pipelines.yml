@@ -24,4 +24,4 @@ jobs:
       publishJUnitResults: true
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
       goals: 'package'
-      options: '-Dmaven.test.skip=true'
+      options: -Dmaven.test.skip=true
